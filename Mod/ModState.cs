@@ -1,4 +1,4 @@
-namespace NextFrameForYao.Mod;
+namespace NextFrameworkForYao.Mod;
 
 
 public enum ModState

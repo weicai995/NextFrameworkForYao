@@ -1,6 +1,6 @@
-using NextFrameForYao.Res;
+using NextFrameworkForYao.Res;
 
-namespace NextFrameForYao.Patch;
+namespace NextFrameworkForYao.Patch;
 
 using Cysharp.Threading.Tasks;
 using System;

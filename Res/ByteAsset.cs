@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace NextFrameForYao.Res
+namespace NextFrameworkForYao.Res
 {
     public class BytesAsset : TextAsset
     {

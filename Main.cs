@@ -3,20 +3,20 @@ using System.IO;
 using System.Text;
 using BepInEx;
 using DeckBuildingGame;
-using NextFrameForYao.Next;
-using NextFrameForYao.Patch;
+using NextFrameworkForYao.Next;
+using NextFrameworkForYao.Patch;
 using HarmonyLib;
-using NextFrameForYao.Mod;
-using NextFrameForYao.Res;
-using NextFrameForYao.Tool;
+using NextFrameworkForYao.Mod;
+using NextFrameworkForYao.Res;
+using NextFrameworkForYao.Tool;
 using Spine;
 using UnityEngine;
 
-namespace NextFrameForYao;
+namespace NextFrameworkForYao;
 
 
 [HarmonyPatch]
-[BepInPlugin("yaoguaihunter.plugin.Next", "NextFrameForYao", "0.0.1")]
+[BepInPlugin("yaoguaihunter.plugin.Next", "NextFrameworkForYao", "0.0.1")]
 public class Main : BaseUnityPlugin
 {
     
@@ -75,13 +75,13 @@ public class Main : BaseUnityPlugin
     {
         Main.I = this;
         this.InitDir();
-        new Harmony(MyPluginInfo.PLUGIN_GUID).PatchAll();
+        new Harmony("yaoguaihunter.plugin.Next").PatchAll();
         this._resourcesManager = this.gameObject.AddComponent<ResourcesManager>();
         this._resourcesManager.Init();
         // Plugin startup logic
         /*LoadTexturePatch.LoadTexture2D("challengeMode");*/
         ModManager.FirstLoadAllMod();
-        Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        Logger.LogInfo($"Plugin {"yaoguaihunter.plugin.Next"} is loaded!");
     }
     
     private void AfterInit(){}

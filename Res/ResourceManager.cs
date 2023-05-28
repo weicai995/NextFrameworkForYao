@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NextFrameForYao.Patch;
+using NextFrameworkForYao.Patch;
 using UnityEngine;
 
-namespace NextFrameForYao.Res
+namespace NextFrameworkForYao.Res
 {
   public class ResourcesManager : MonoBehaviour
   {

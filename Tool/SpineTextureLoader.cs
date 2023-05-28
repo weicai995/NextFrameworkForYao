@@ -1,7 +1,7 @@
 using Spine;
 using UnityEngine;
 
-namespace NextFrameForYao.Tool;
+namespace NextFrameworkForYao.Tool;
 
 public class SpineTextureLoader : TextureLoader
 {

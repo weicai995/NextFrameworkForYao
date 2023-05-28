@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using UnityEngine;
 
-namespace NextFrameForYao.WorkShop;
+namespace NextFrameworkForYao.WorkShop;
 
 public static class WorkshopTool
 {

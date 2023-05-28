@@ -1,4 +1,4 @@
-namespace NextFrameForYao
+namespace firstPlugin
 {
     public static class MyPluginInfo
     {

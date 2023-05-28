@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace NextFrameForYao.Mod;
+namespace NextFrameworkForYao.Mod;
 
 public class ModConfig
 {

@@ -1,7 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace NextFrameForYao.Patch;
+namespace NextFrameworkForYao.Patch;
 
 /*public class LoadTexturePatch
 {

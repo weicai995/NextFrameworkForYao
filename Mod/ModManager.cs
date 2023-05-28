@@ -9,11 +9,11 @@ using HarmonyLib;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NextFrameForYao.WorkShop;
+using NextFrameworkForYao.WorkShop;
 using Spine;
 using Debug = UnityEngine.Debug;
 
-namespace NextFrameForYao.Mod;
+namespace NextFrameworkForYao.Mod;
 
 public class ModManager
 {

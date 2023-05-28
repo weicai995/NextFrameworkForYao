@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NextFrameForYao.Next;
+using NextFrameworkForYao.Next;
 
-namespace NextFrameForYao.Mod;
+namespace NextFrameworkForYao.Mod;
 
 public class ModGroup
 {

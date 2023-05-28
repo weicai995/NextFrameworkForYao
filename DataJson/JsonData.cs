@@ -1,4 +1,4 @@
-namespace NextFrameForYao.DataJson;
+namespace NextFrameworkForYao.DataJson;
 
 public class JsonData
 {
