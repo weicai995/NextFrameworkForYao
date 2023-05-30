@@ -44,14 +44,15 @@ public static class WorkshopTool
     {
       foreach (DirectoryInfo directory in directoryInfo.GetDirectories())
       {
-        foreach (FileSystemInfo file in directory.GetFiles())
+        /*foreach (FileSystemInfo file in directory.GetFiles())
         {
           if (file.Name == "Mod.bin")
           {
             allModDirectory.Add(directory);
             break;
           }
-        }
+        }*/
+        allModDirectory.Add(directory);
       }
     }
 

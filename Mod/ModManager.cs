@@ -9,6 +9,7 @@ using HarmonyLib;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NextFrameworkForYao.DataJson;
 using NextFrameworkForYao.WorkShop;
 using Spine;
 using Debug = UnityEngine.Debug;
@@ -205,7 +206,10 @@ public class ModManager
         return;
     }
 
-
+   //  public static Dictionary<string, Dictionary<string, List<object>>> ModCache;
+     
+   public static Dictionary<string, List<Hero_>> ModHeroCache = new Dictionary<string, List<Hero_>>(); 
+     public static Dictionary<string, List<Unit_>> ModUnitCache = new Dictionary<string, List<Unit_>>();
      public static Dictionary<string, List<Card_>> ModCardsCache = new Dictionary<string, List<Card_>>();
      public static Dictionary<string, Type> ModTypeCache = new Dictionary<string, Type>();
 
@@ -286,6 +290,37 @@ public class ModManager
                 ModCardsCache[modConfig.Name + ".Cards"] = new List<Card_>(c){};
             }*/
             ModCardsCache[modConfig.Name + ".Cards"] = new List<Card_>(c){};
+        }
+
+        //  var jsonDatatypes = typeof(JsonData).GetFields();
+        foreach (var type in new Type[]{typeof(Unit_[]),typeof(Buff_[]),typeof(Hero_[])})
+        {
+            if(type == typeof(JsonData))
+                continue;
+            var FilePath = BepInEx.Utility.CombinePaths(dataDir, type.Name.TrimEnd("_[]".ToCharArray()) + ".json");
+            object array = null;
+            if (File.Exists(FilePath))
+            {
+                array = JArray.Parse(File.ReadAllText(@FilePath)).ToObject(type);
+            }
+            /*
+            c = JsonConvert.DeserializeObject<Card_>();*/
+            else
+            {
+                Main.LogInfo("No "+type.Name+" Json");
+            }
+
+            if (array != null)
+            {
+                if (type == typeof(Unit_[]))
+                {
+                    ModUnitCache[modConfig.Name + ".Units"] = new List<Unit_>(array as Unit_[]){};
+                }
+                else if (type == typeof(Hero_[]))
+                {
+                    ModHeroCache[modConfig.Name + ".Heros"] = new List<Hero_>(array as Hero_[]){};
+                }
+            }
         }
         
 

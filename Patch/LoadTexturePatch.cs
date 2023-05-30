@@ -32,12 +32,12 @@ namespace NextFrameworkForYao.Patch;
         {
             Object asset;
             if (!Main.Res.TryGetAsset("assets/" + path.TrimStart("CardArts/".ToCharArray()) + ".png", out asset) || !(asset is Texture2D texture)){
-                foreach (var VARIABLE in Main.Res.fileAssets.Keys)
+                /*foreach (var VARIABLE in Main.Res.fileAssets.Keys)
                 {
                     Debug.Log("assets/" + path.TrimStart("CardArts/".ToCharArray()) + ".png");
                     Debug.Log(VARIABLE);
                 }
-                Debug.Log("没找到");
+                Debug.Log("没找到");*/
                 return true;
             }
             __result = Main.Res.GetSpriteCache(texture);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BepInEx;
@@ -123,9 +124,26 @@ public class Main : BaseUnityPlugin
     }*/
     
    
-    [HarmonyPostfix]
+    /*[HarmonyPostfix]
     [HarmonyPatch(typeof(DataManager), nameof(DataManager.Init))]
     private static void AddCard()
+    {
+        foreach (var pair  in ModManager.ModCardsCache)
+        {
+            foreach (var card_ in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");#1#
+                DataManager.Instance.导入Mod卡(card_);
+                Main.LogInfo("Add Card: "+ card_.CardName);
+            }
+        }
+        /*Logger.LogInfo(dataList.Length);#1#
+    }*/
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(DataManager), nameof(DataManager.Init))]
+    private static void ImplementMod()
     {
         foreach (var pair  in ModManager.ModCardsCache)
         {
@@ -137,8 +155,78 @@ public class Main : BaseUnityPlugin
                 Main.LogInfo("Add Card: "+ card_.CardName);
             }
         }
+        foreach (var pair  in ModManager.ModUnitCache)
+        {
+            foreach (var Unit_ in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(Unit_);
+                Main.LogInfo("Add Unit: "+ Unit_.id);
+            }
+        }
+        foreach (var pair  in ModManager.ModHeroCache)
+        {
+            foreach (var Hero_ in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(Hero_);
+                Main.LogInfo("Add Hero: "+ Hero_.id);
+            }
+        }
         /*Logger.LogInfo(dataList.Length);*/
     }
+    
+    
+    
+    
+/// <summary>
+/// 根据mod新加入的 Hero, 创建选人界面中对应的按钮
+/// </summary>
+/// <returns></returns>
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.InitHeroPage))]
+    public static bool AddNewHeroBtn(MainMenuManager __instance)
+    {
+        
+        List<GameObject> HeroBtns= Traverse.Create(__instance).Field("HeroBtns").GetValue() as List<GameObject>;
+        var btn = HeroBtns[0];
+        
+        foreach (var pair  in ModManager.ModHeroCache)
+        {
+            foreach (var Hero_ in pair.Value)
+            {
+                var clonebtn =GameObject.Instantiate(btn,btn.transform.parent);
+                clonebtn.transform.localPosition = btn.transform.localPosition + new Vector3(3*1.1f,0f,0f);
+                clonebtn.gameObject.name = "巫女测试";
+                var 立绘 =__instance.HeroArt.transform.Find("侍卫").gameObject;
+            
+                var clone立绘 =GameObject.Instantiate(立绘,立绘.transform.parent);
+                clone立绘.name = "巫女测试";
+                clone立绘.SetActive(false);
+        
+                //SkeletonAnimation sda = clone立绘.GetComponent<SkeletonAnimation>();
+                HeroBtns.Add(clonebtn);
+                Debug.Log("增加按钮");
+            }
+        }
+        return true;
+    }
+
+/// <summary>
+///  修改switchHero
+/// </summary>
+/// <param name="type"></param>
+/// <param name="__result"></param>
+/// <returns></returns>
+/*[HarmonyPrefix]
+[HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.InitHeroPage))]
+public static bool switchHeroPagePatch(ref GameObject btnClicked, ref bool iSInital, ref string __result)
+{
+    return true;
+}*/
+
     
     [HarmonyPrefix]
     [HarmonyPatch(typeof(Battle), nameof(Battle.InitCardType))]
