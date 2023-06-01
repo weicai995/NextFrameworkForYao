@@ -13,6 +13,7 @@ using NextFrameworkForYao.DataJson;
 using NextFrameworkForYao.WorkShop;
 using Spine;
 using Spine.Unity;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace NextFrameworkForYao.Mod;
@@ -213,7 +214,7 @@ public class ModManager
      public static Dictionary<string, List<Unit_>> ModUnitCache = new Dictionary<string, List<Unit_>>();
      public static Dictionary<string, List<Card_>> ModCardsCache = new Dictionary<string, List<Card_>>();
      public static Dictionary<string, Type> ModTypeCache = new Dictionary<string, Type>();
-
+     public static Dictionary<string, GameObject> ModPrefabCache = new Dictionary<string, GameObject>();
 
      public static Dictionary<string, List<SkeletonDataAsset>> ModSKeletonDataCache =
          new Dictionary<string, List<SkeletonDataAsset>>();

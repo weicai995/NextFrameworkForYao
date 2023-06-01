@@ -10,6 +10,7 @@ namespace NextFrameworkForYao.Res
 {
   public class ResourcesManager : MonoBehaviour
   {
+    
     public Dictionary<string, FileAsset> fileAssets = new Dictionary<string, FileAsset>((IEqualityComparer<string>) StringComparer.OrdinalIgnoreCase);
     public Dictionary<int, Sprite> spriteCache = new Dictionary<int, Sprite>();
 

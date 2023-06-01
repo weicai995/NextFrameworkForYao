@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using BepInEx;
 using DeckBuildingGame;
@@ -184,7 +185,41 @@ public class Main : BaseUnityPlugin
             {
                 /*var NameSpace = "firstPlugin";
                 Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                
+                if (Unit_.Pic.Contains("."))
+                {
+                    var modName = Unit_.Pic.Split('.')[0];
+                    var modGroup = ModManager.modGroups.FirstOrDefault(i => i.GroupKey == modName);
+                    if (modGroup == null)
+                    {
+                        Main.LogError("Load Unit failed: "+"No such ModGroup called "+modName);
+                        continue;
+                    }
+                    var unitPrafabName = Unit_.Pic.Split('.').Last();
+                    if (modGroup.ModConfigs.Count == 0)
+                    {
+                        Main.LogError("Load Unit failed: "+"No such mod config file for modGroup "+modName);
+                        continue;
+                    }
+                    if (!File.Exists(modGroup.ModConfigs[0].Path + @"\Assets\spine\"+unitPrafabName))
+                    {
+                        Main.LogError("Load Unit failed: "+"No such spine file called "+unitPrafabName+" for Unit "+Unit_.id);
+                        continue;
+                    }
+                    else
+                    {
+                        var newUnit = GameObject.Instantiate(DeckBuildingGame.GameManager.Instance.UnitPrefabTemple);
+                        var sda = newUnit.transform.Find("Spine").GetComponent<SkeletonAnimation>();
+                        Utils.ChangeSkeletonDataAssetRuntime(ModManager.ModSKeletonDataCache[modGroup.ModConfigs[0].Name + ".spine."+unitPrafabName][0],sda);
+                        LoadUnitPrefabPatch.UnitPrefabCacche[Unit_.Pic] = newUnit;
+                        Main.LogInfo("Load UnitPrefab: "+Unit_.Pic);
+                    }
+                }
+                
+                
                 DataManager.Instance.导入Mod(Unit_);
+                ///需要创建UnitPrefab的场合
+                
                 Main.LogInfo("Add Unit: "+ Unit_.id);
             }
         }
