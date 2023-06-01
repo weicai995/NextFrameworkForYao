@@ -11,6 +11,7 @@ using NextFrameworkForYao.Mod;
 using NextFrameworkForYao.Res;
 using NextFrameworkForYao.Tool;
 using Spine;
+using Spine.Unity;
 using UnityEngine;
 
 namespace NextFrameworkForYao;
@@ -88,6 +89,28 @@ public class Main : BaseUnityPlugin
     private void AfterInit(){}
 
 
+    /*[HarmonyPrefix]
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.SwitchHeroPage))]
+    public static bool PatchModSpine(MainMenuManager __instance, ref bool modHero)
+    {
+        modHero = true;
+        var ska = __instance.HeroPage.transform.Find("HeroInfos").Find("立绘").Find("侍卫")
+            .GetComponent<SkeletonAnimation>();
+        foreach (var pair  in ModManager.ModSKeletonDataCache)
+        {
+            foreach (var sda in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");#1#
+                Utils.ChangeSkeletonDataAssetRuntime(sda,ska);
+                Main.LogInfo("替换了 选人界面立绘: "+ pair.Key);
+            }
+        }
+        return true;
+    }*/
+    
+    
+    
     public static SkeletonData LoadSkeletonData(string atlasPath,string  jsonPath)
     {
         Debug.Log("atlasPath: "+atlasPath);
@@ -110,14 +133,14 @@ public class Main : BaseUnityPlugin
     [HarmonyPatch(typeof(RunManager), nameof(RunManager.LoadLevel))]
     static void PatchSpine(RunManager __instance)
     {
-        /*var Player= (DeckBuildingGame.Unit) Traverse.Create(__instance).Field("Player").GetValue();
-        Player.UnitView.transform.Find("Avatar").Find("Spine").GetComponent<Spine.Unity.SkeletonAnimation>();#1#
+        var Player= (DeckBuildingGame.Unit) Traverse.Create(__instance).Field("Player").GetValue();
+        Player.UnitView.transform.Find("Avatar").Find("Spine").GetComponent<Spine.Unity.SkeletonAnimation>();
         foreach (var pair  in ModManager.ModSKeletonDataCache)
         {
             foreach (var skeletonData in pair.Value)
             {
-                /*var NameSpace = "firstPlugin";
-                Type t = Type.GetType($"{NameSpace}.{card_.Type}");#1#
+                var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");
                 DataManager.Instance.导入Mod卡(skeletonData);
             }
         }
@@ -177,11 +200,10 @@ public class Main : BaseUnityPlugin
         }
         /*Logger.LogInfo(dataList.Length);*/
     }
-    
-    
-    
-    
-/// <summary>
+
+
+
+    /// <summary>
 /// 根据mod新加入的 Hero, 创建选人界面中对应的按钮
 /// </summary>
 /// <returns></returns>
@@ -198,12 +220,13 @@ public class Main : BaseUnityPlugin
             foreach (var Hero_ in pair.Value)
             {
                 var clonebtn =GameObject.Instantiate(btn,btn.transform.parent);
-                clonebtn.transform.localPosition = btn.transform.localPosition + new Vector3(3*1.1f,0f,0f);
-                clonebtn.gameObject.name = "巫女测试";
+                clonebtn.transform.localPosition = btn.transform.localPosition + new Vector3(3 * 1.1f, 0f, 0f);
+                clonebtn.gameObject.name = Hero_.id;
                 var 立绘 =__instance.HeroArt.transform.Find("侍卫").gameObject;
             
                 var clone立绘 =GameObject.Instantiate(立绘,立绘.transform.parent);
-                clone立绘.name = "巫女测试";
+                clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x,0f,clone立绘.transform.localPosition.z);
+                clone立绘.name = Hero_.id;
                 clone立绘.SetActive(false);
         
                 //SkeletonAnimation sda = clone立绘.GetComponent<SkeletonAnimation>();
@@ -211,6 +234,20 @@ public class Main : BaseUnityPlugin
                 Debug.Log("增加按钮");
             }
         }
+
+       
+        foreach (var pair  in ModManager.ModSKeletonDataCache)
+        {
+            foreach (var sda in pair.Value)
+            {
+                var ska =  __instance.HeroArt.transform.Find("侍卫mod").gameObject.GetComponent<SkeletonAnimation>(); 
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                Utils.ChangeSkeletonDataAssetRuntime(sda,ska);
+                Main.LogInfo("替换了 选人界面立绘: "+ pair.Key);
+            }
+        }
+        
         return true;
     }
 

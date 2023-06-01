@@ -17,7 +17,7 @@
           "UnityEngine.Modules": "2020.3.46",
           "Assembly-CSharp": "0.0.0.0",
           "Newtonsoft.Json": "13.0.0.0",
-          "spine-csharp": "1.0.0.0"
+          "spine-unity": "0.0.0.0"
         },
         "runtime": {
           "firstPlugin.dll": {}
@@ -435,11 +435,11 @@
           }
         }
       },
-      "spine-csharp/1.0.0.0": {
+      "spine-unity/0.0.0.0": {
         "runtime": {
-          "spine-csharp.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+          "spine-unity.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
           }
         }
       },
@@ -480,14 +480,6 @@
           "DOTween.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "spine-unity/0.0.0.0": {
-        "runtime": {
-          "spine-unity.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
           }
         }
       },
@@ -827,7 +819,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "spine-csharp/1.0.0.0": {
+    "spine-unity/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
@@ -853,11 +845,6 @@
       "sha512": ""
     },
     "DOTween/1.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "spine-unity/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

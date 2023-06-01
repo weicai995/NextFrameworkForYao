@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using NextFrameworkForYao.DataJson;
 using NextFrameworkForYao.WorkShop;
 using Spine;
+using Spine.Unity;
 using Debug = UnityEngine.Debug;
 
 namespace NextFrameworkForYao.Mod;
@@ -214,8 +215,8 @@ public class ModManager
      public static Dictionary<string, Type> ModTypeCache = new Dictionary<string, Type>();
 
 
-     public static Dictionary<string, List<SkeletonData>> ModSKeletonDataCache =
-         new Dictionary<string, List<SkeletonData>>();
+     public static Dictionary<string, List<SkeletonDataAsset>> ModSKeletonDataCache =
+         new Dictionary<string, List<SkeletonDataAsset>>();
 
 
      private static void LoadModData(ModConfig modConfig)
@@ -322,26 +323,41 @@ public class ModManager
                 }
             }
         }
-        
 
+      //  var sda = Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\spine\MarisaModelv3", "MarisaModelv3");
         #endregion
+
+        DirectoryInfo directoryInfo = new DirectoryInfo(modConfig.Path + @"\Assets\spine");
+        if (directoryInfo.Exists)
+        {
+            foreach (var subDir in directoryInfo.GetDirectories())
+            {
+                foreach (var fileInfo in subDir.GetFiles())
+                {
+                    if (fileInfo.Extension.EndsWith(".json"))
+                    {
+                       var fileName = fileInfo.Name.TrimEnd(".json".ToCharArray());
+                       var skeletonDataAsset =   Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\spine\"+subDir.Name, fileName);
+                       if (skeletonDataAsset != null)
+                       {
+                           if (ModSKeletonDataCache.TryGetValue(modConfig.Name + ".spine."+fileName, out var cards))
+                           {
+                               cards.Add(skeletonDataAsset);
+                           }
+                           else
+                           {
+                               ModSKeletonDataCache[modConfig.Name + ".spine."+fileName] = new List<SkeletonDataAsset>(){skeletonDataAsset};
+                           }
+                       }
+                    }
+                }
+            }
+            // var skeletonData =  Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\spine\MarisaModelv3", "MarisaModelv3");;// Main.LoadSkeletonData(modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.atlas",modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.json");
+           
+        }
+        
         
         Main.Res.CacheAssetDir(modConfig.Path + "\\Assets");
-        if (Directory.Exists(modConfig.Path + @"\Assets\spine"))
-        {
-           var skeletonData = Main.LoadSkeletonData(modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.atlas",modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.json");
-           if (skeletonData != null)
-           {
-               if (ModSKeletonDataCache.TryGetValue(modConfig.Name + ".spine."+skeletonData.Name, out var cards))
-               {
-                   cards.Add(skeletonData);
-               }
-               else
-               {
-                   ModSKeletonDataCache[modConfig.Name + ".spine."+skeletonData.Name] = new List<SkeletonData>(){skeletonData};
-               }
-           }
-        }
       }
       catch (Exception ex)
       {
