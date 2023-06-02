@@ -206,6 +206,11 @@ public class ModManager
 
    //  public static Dictionary<string, Dictionary<string, List<object>>> ModCache;
      
+   public static Dictionary<string, List<Buff_>> ModBuffCache = new Dictionary<string, List<Buff_>>(); 
+   public static Dictionary<string, List<TalentTree_>> ModTalentTreeCache = new Dictionary<string, List<TalentTree_>>(); 
+   public static Dictionary<string, List<Talent_>> ModTalentCache = new Dictionary<string, List<Talent_>>(); 
+   public static Dictionary<string, List<Troop_>> ModTroopCache = new Dictionary<string, List<Troop_>>(); 
+   public static Dictionary<string, List<Hex_>> ModHexCache = new Dictionary<string, List<Hex_>>(); 
    public static Dictionary<string, List<Hero_>> ModHeroCache = new Dictionary<string, List<Hero_>>(); 
      public static Dictionary<string, List<Unit_>> ModUnitCache = new Dictionary<string, List<Unit_>>();
      public static Dictionary<string, List<Card_>> ModCardsCache = new Dictionary<string, List<Card_>>();
@@ -321,7 +326,23 @@ public class ModManager
 
                 if (type == typeof(Buff_[]))
                 {
-                    
+                    ModBuffCache[modConfig.Name + ".Buffs"] = new List<Buff_>(array as Buff_[]){};
+                } 
+                if (type == typeof(Troop_[]))
+                {
+                    ModTroopCache[modConfig.Name + ".Troops"] = new List<Troop_>(array as Troop_[]){};
+                } 
+                if (type == typeof(TalentTree_[]))
+                {
+                    ModTalentTreeCache[modConfig.Name + ".TalentTrees"] = new List<TalentTree_>(array as TalentTree_[]){};
+                } 
+                if (type == typeof(Hex_[]))
+                {
+                    ModHexCache[modConfig.Name + ".Hexs"] = new List<Hex_>(array as Hex_[]){};
+                } 
+                if (type == typeof(Talent_[]))
+                {
+                    ModTalentCache[modConfig.Name + ".Talents"] = new List<Talent_>(array as Talent_[]){};
                 } 
             }
         }

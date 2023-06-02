@@ -233,16 +233,72 @@ public class Main : BaseUnityPlugin
         }
 
       
-            foreach (var pair in ModManager.ModHeroCache)
+        foreach (var pair in ModManager.ModHeroCache)
+        {
+            foreach (var hero in pair.Value)
             {
-                foreach (var hero in pair.Value)
-                {
-                    /*var NameSpace = "firstPlugin";
-                    Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
-                    DataManager.Instance.导入Mod(hero);
-                    Main.LogInfo("Add Hero: " + (hero).id);
-                }
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(hero);
+                Main.LogInfo("Add Hero: " + (hero).id);
             }
+        }
+        
+        foreach (var pair in ModManager.ModBuffCache)
+        {
+            foreach (var buff in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(buff);
+                Main.LogInfo("Add Buff: " + (buff).id);
+            }
+        }
+        
+        foreach (var pair in ModManager.ModTalentCache)
+        {
+            foreach (var talent in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(talent);
+                Main.LogInfo("Add Talent: " + (talent).id);
+            }
+        }
+        
+        foreach (var pair in ModManager.ModTalentTreeCache)
+        {
+            foreach (var talentTree in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(talentTree);
+                Main.LogInfo("Add TalentTree: " + (talentTree).id);
+            }
+        }
+        
+        foreach (var pair in ModManager.ModHexCache)
+        {
+            foreach (var hex in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(hex);
+                Main.LogInfo("Add Hex: " + (hex).id);
+            }
+        }
+        
+        foreach (var pair in ModManager.ModTroopCache)
+        {
+            foreach (var troop in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(troop);
+                Main.LogInfo("Add Troop: " + (troop).id);
+            }
+        }
+        
         
         /*Logger.LogInfo(dataList.Length);*/
     }
