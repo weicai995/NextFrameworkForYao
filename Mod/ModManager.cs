@@ -55,15 +55,11 @@ public class ModManager
     
     private static ModConfig GetModConfig(string dir)
     {
-        Main.LogInfo("hh1");
         ModConfig modConfig1 = (ModConfig) null;
-        Main.LogInfo("hh2");
         try
         {
-            Main.LogInfo("hh3");
             Debug.Log("?: "+dir);
             modConfig1 = ModConfig.Load(dir);
-            Main.LogInfo("hh");
         }
         catch (Exception ex)
         {
@@ -295,7 +291,7 @@ public class ModManager
         }
 
         //  var jsonDatatypes = typeof(JsonData).GetFields();
-        foreach (var type in new Type[]{typeof(Unit_[]),typeof(Buff_[]),typeof(Hero_[])})
+        foreach (var type in new Type[]{typeof(Unit_[]),typeof(Buff_[]),typeof(Hero_[]),typeof(Troop_[]),typeof(TalentTree_[]),typeof(Hex_[]),typeof(Talent_[])})
         {
             if(type == typeof(JsonData))
                 continue;
@@ -322,6 +318,11 @@ public class ModManager
                 {
                     ModHeroCache[modConfig.Name + ".Heros"] = new List<Hero_>(array as Hero_[]){};
                 }
+
+                if (type == typeof(Buff_[]))
+                {
+                    
+                } 
             }
         }
 

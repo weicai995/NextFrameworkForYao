@@ -189,7 +189,12 @@ public class Main : BaseUnityPlugin
                 if (Unit_.Pic.Contains("."))
                 {
                     var modName = Unit_.Pic.Split('.')[0];
-                    var modGroup = ModManager.modGroups.FirstOrDefault(i => i.GroupKey == modName);
+                    /*Main.LogError(ModManager.modGroups.Count);
+                    foreach (var VARIABLE in ModManager.modGroups)
+                    {
+                        Main.LogError(VARIABLE.ModConfigs[0].Name);
+                    }*/
+                    var modGroup = ModManager.modGroups.FirstOrDefault(i => i.ModConfigs[0].Name == modName);
                     if (modGroup == null)
                     {
                         Main.LogError("Load Unit failed: "+"No such ModGroup called "+modName);
@@ -201,17 +206,20 @@ public class Main : BaseUnityPlugin
                         Main.LogError("Load Unit failed: "+"No such mod config file for modGroup "+modName);
                         continue;
                     }
-                    if (!File.Exists(modGroup.ModConfigs[0].Path + @"\Assets\spine\"+unitPrafabName))
+                    if (!Directory.Exists(modGroup.ModConfigs[0].Path + @"\Assets\spine\"+unitPrafabName))
                     {
                         Main.LogError("Load Unit failed: "+"No such spine file called "+unitPrafabName+" for Unit "+Unit_.id);
                         continue;
                     }
                     else
                     {
-                        var newUnit = GameObject.Instantiate(DeckBuildingGame.GameManager.Instance.UnitPrefabTemple);
+                        ///主角3 是模板
+                        var newUnit = UnityEngine.Object.Instantiate(ResHelper.GetUnitPrefab("主角3"));
                         var sda = newUnit.transform.Find("Spine").GetComponent<SkeletonAnimation>();
                         Utils.ChangeSkeletonDataAssetRuntime(ModManager.ModSKeletonDataCache[modGroup.ModConfigs[0].Name + ".spine."+unitPrafabName][0],sda);
                         LoadUnitPrefabPatch.UnitPrefabCacche[Unit_.Pic] = newUnit;
+                        newUnit.SetActive(false);
+                        GameObject.DontDestroyOnLoad(newUnit);
                         Main.LogInfo("Load UnitPrefab: "+Unit_.Pic);
                     }
                 }
@@ -223,16 +231,19 @@ public class Main : BaseUnityPlugin
                 Main.LogInfo("Add Unit: "+ Unit_.id);
             }
         }
-        foreach (var pair  in ModManager.ModHeroCache)
-        {
-            foreach (var Hero_ in pair.Value)
+
+      
+            foreach (var pair in ModManager.ModHeroCache)
             {
-                /*var NameSpace = "firstPlugin";
-                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
-                DataManager.Instance.导入Mod(Hero_);
-                Main.LogInfo("Add Hero: "+ Hero_.id);
+                foreach (var hero in pair.Value)
+                {
+                    /*var NameSpace = "firstPlugin";
+                    Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                    DataManager.Instance.导入Mod(hero);
+                    Main.LogInfo("Add Hero: " + (hero).id);
+                }
             }
-        }
+        
         /*Logger.LogInfo(dataList.Length);*/
     }
 
@@ -249,28 +260,32 @@ public class Main : BaseUnityPlugin
         
         List<GameObject> HeroBtns= Traverse.Create(__instance).Field("HeroBtns").GetValue() as List<GameObject>;
         var btn = HeroBtns[0];
-        
-        foreach (var pair  in ModManager.ModHeroCache)
-        {
-            foreach (var Hero_ in pair.Value)
+    
+            foreach (var pair in ModManager.ModHeroCache)
             {
-                var clonebtn =GameObject.Instantiate(btn,btn.transform.parent);
-                clonebtn.transform.localPosition = btn.transform.localPosition + new Vector3(3 * 1.1f, 0f, 0f);
-                clonebtn.gameObject.name = Hero_.id;
-                var 立绘 =__instance.HeroArt.transform.Find("侍卫").gameObject;
-            
-                var clone立绘 =GameObject.Instantiate(立绘,立绘.transform.parent);
-                clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x,0f,clone立绘.transform.localPosition.z);
-                clone立绘.name = Hero_.id;
-                clone立绘.SetActive(false);
-        
-                //SkeletonAnimation sda = clone立绘.GetComponent<SkeletonAnimation>();
-                HeroBtns.Add(clonebtn);
-                Debug.Log("增加按钮");
-            }
-        }
+                foreach (var Hero_ in pair.Value)
+                {
+                    var clonebtn = GameObject.Instantiate(btn, btn.transform.parent);
+                    clonebtn.transform.localPosition = btn.transform.localPosition + new Vector3(3 * 1.15f, 0f, 0f);
+                    clonebtn.gameObject.name = Hero_.id;
+                    var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
 
-       
+                    var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                    clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, 0f,
+                        clone立绘.transform.localPosition.z);
+                    clone立绘.name = Hero_.id;
+                    clone立绘.SetActive(false);
+                    var ska = clone立绘.GetComponent<SkeletonAnimation>();
+
+
+
+                    //SkeletonAnimation sda = clone立绘.GetComponent<SkeletonAnimation>();
+                    HeroBtns.Add(clonebtn);
+                    Debug.Log("增加按钮");
+                }
+            }
+        
+
         foreach (var pair  in ModManager.ModSKeletonDataCache)
         {
             foreach (var sda in pair.Value)
@@ -279,7 +294,7 @@ public class Main : BaseUnityPlugin
                 /*var NameSpace = "firstPlugin";
                 Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
                 Utils.ChangeSkeletonDataAssetRuntime(sda,ska);
-                Main.LogInfo("替换了 选人界面立绘: "+ pair.Key);
+           //     Main.LogInfo("替换了 选人界面立绘: "+ pair.Key);
             }
         }
         

@@ -18,6 +18,7 @@ public class LoadUnitPrefabPatch
         public static bool LoadSprite(string path, ref GameObject __result)
         {
             GameObject asset;
+            
             if (!UnitPrefabCacche.TryGetValue(path, out asset)){
                 /*foreach (var VARIABLE in Main.Res.fileAssets.Keys)
                 {
@@ -25,9 +26,11 @@ public class LoadUnitPrefabPatch
                     Debug.Log(VARIABLE);
                 }
                 Debug.Log("没找到");*/
+                Debug.LogError("没找到"+path);
                 return true;
             }
-            __result = UnitPrefabCacche[path];
+            Debug.LogError("找到了"+path);
+            __result = GameObject.Instantiate(UnitPrefabCacche[path]);
             return false;
         }
     }
