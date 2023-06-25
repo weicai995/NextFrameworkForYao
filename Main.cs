@@ -304,6 +304,53 @@ public class Main : BaseUnityPlugin
     }
 
 
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(ProfileData), nameof(ProfileData.Import))]
+    public static void ModifyModAscension()
+    {
+        foreach (var pair in ModManager.ModHeroCache)
+        {
+            foreach (var hero in pair.Value)
+            {
+                if(!DeckBuildingGame.GameManager.Instance.ModAscensionLevel.TryGetValue(hero.id,out var _))
+                {
+                    DeckBuildingGame.GameManager.Instance.ModAscensionLevel[hero.id] = 0;
+                }
+                if(!DeckBuildingGame.GameManager.Instance.ModAscensionSteps.TryGetValue(hero.id,out var _))
+                {
+                    DeckBuildingGame.GameManager.Instance.ModAscensionSteps[hero.id] = 0;
+                }
+                Main.LogInfo("Add Hero Ascension Save File: " + (hero).id);
+            }
+        }
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(DeckBuildingGame.GameManager), nameof(DeckBuildingGame.GameManager.InitProfile))]
+    public static void ModifyModAscension2()
+    {
+        if(DeckBuildingGame.GameManager.Instance.ModAscensionLevel == null)
+            DeckBuildingGame.GameManager.Instance.ModAscensionLevel = new Dictionary<string, int>();
+        if(DeckBuildingGame.GameManager.Instance.ModAscensionSteps == null)
+            DeckBuildingGame.GameManager.Instance.ModAscensionSteps = new Dictionary<string, int>();
+        foreach (var pair in ModManager.ModHeroCache)
+        {
+            foreach (var hero in pair.Value)
+            {
+                if(!DeckBuildingGame.GameManager.Instance.ModAscensionLevel.TryGetValue(hero.id,out var _))
+                {
+                    DeckBuildingGame.GameManager.Instance.ModAscensionLevel[hero.id] = 0;
+                }
+                if(!DeckBuildingGame.GameManager.Instance.ModAscensionSteps.TryGetValue(hero.id,out var _))
+                {
+                    DeckBuildingGame.GameManager.Instance.ModAscensionSteps[hero.id] = 0;
+                }
+                Main.LogInfo("Add Hero Ascension Save File: " + (hero).id);
+            }
+        }
+    }
+   
+
 
     /// <summary>
 /// 根据mod新加入的 Hero, 创建选人界面中对应的按钮
