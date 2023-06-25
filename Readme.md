@@ -2,7 +2,7 @@
 ### Mod前置框架Next降妖散记版
 
 Next Mod是基于BepinEx框架的Mod，为游戏降妖散记提供更简易的修改 (此版本基于觅长生版本的Next Mod框架修改)
-github地址： https://github.com/weicai995/NextFrameworkForYao
+github地址： https://github.com/weicai995/NextFrameworkForYao/tree/master
 
 ### 功能
 
@@ -33,3 +33,7 @@ https://github.com/magicskysword/Next
 ### 许可证
 
 [MIT](https://opensource.org/license/mit/)
+
+### 其他
+
+降妖散记Mod制作交流QQ群: [838731579](http:/qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=71pn4IMZ9DDoLn0nVlV2F-btox0raK8Q&authKey=sxwpatjXsg2gDayaDTU9uo58%2Bei7mt7pUIUNJL87vhqHcuHXw%2Flpwhl7ZAoKjtZ6&noverify=0&group_code=838731579)
