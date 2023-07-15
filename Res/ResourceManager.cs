@@ -208,12 +208,30 @@ namespace NextFrameworkForYao.Res
       this.fileAssets[lower] = fileAsset;
     }
 
-    public Sprite GetSpriteCache(Texture2D texture)
+    public Sprite GetSpriteCache(Texture2D texture, string spriteType = "CardView")
     {
       Sprite spriteCache;
       if (!this.spriteCache.TryGetValue(((object) texture).GetHashCode(), out spriteCache))
       {
-        spriteCache = Sprite.Create(texture, new Rect(0.0f, 0.0f, (float) 351f, (float) 253f), new Vector2(0.5f, 0.5f));
+        float width = 351f;
+        float height = 253f;
+        switch (spriteType)
+        {
+          case "Skills":
+          {
+            width = 140f;
+            height = 140f;
+            break;
+          }
+          case "TalentPics":
+          {
+            width = 120f;
+            height = 120f;
+            break;
+          }
+        }
+        
+        spriteCache = Sprite.Create(texture, new Rect(0.0f, 0.0f, width, (float)height), new Vector2(0.5f, 0.5f));
         this.spriteCache.Add(((object) texture).GetHashCode(), spriteCache);
       }
       return spriteCache;

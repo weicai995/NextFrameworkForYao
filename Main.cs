@@ -298,9 +298,19 @@ public class Main : BaseUnityPlugin
                 Main.LogInfo("Add Troop: " + (troop).id);
             }
         }
-        
+        foreach (var pair in ModManager.ModBonusCache)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add Bonus: " + (bonus).id);
+            }
+        }
         
         /*Logger.LogInfo(dataList.Length);*/
+        LogInfo("Mod加载完毕");
     }
 
 
@@ -356,55 +366,146 @@ public class Main : BaseUnityPlugin
 /// 根据mod新加入的 Hero, 创建选人界面中对应的按钮
 /// </summary>
 /// <returns></returns>
-    [HarmonyPrefix]
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.InitHeroPage))]
-    public static bool AddNewHeroBtn(MainMenuManager __instance)
+    public static void AddNewHeroBtn(MainMenuManager __instance)
     {
         
         List<GameObject> HeroBtns= Traverse.Create(__instance).Field("HeroBtns").GetValue() as List<GameObject>;
         var btn = HeroBtns[0];
-    
+        var 名字GameObject = btn.transform.parent.parent.Find("HeroInfos").Find("人名").Find("HeroName").Find("侍卫").gameObject;
+
+        var oldValue = DeckBuildingGame.GameManager.Instance.HeroNum;
+        
             foreach (var pair in ModManager.ModHeroCache)
             {
+                var modName = pair.Key.TrimEnd(".Heros".ToCharArray());
                 foreach (var Hero_ in pair.Value)
                 {
-                    var clonebtn = GameObject.Instantiate(btn, btn.transform.parent);
-                    clonebtn.transform.localPosition = btn.transform.localPosition + new Vector3(3 * 1.15f, 0f, 0f);
-                    clonebtn.gameObject.name = Hero_.id;
-                    var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
+                    if (Hero_.Unit == "主角3")
+                    {
+                        var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
 
-                    var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
-                    clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, 0f,
-                        clone立绘.transform.localPosition.z);
-                    clone立绘.name = Hero_.id;
-                    clone立绘.SetActive(false);
-                    var ska = clone立绘.GetComponent<SkeletonAnimation>();
+                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, clone立绘.transform.localPosition.y,
+                            clone立绘.transform.localPosition.z);
+                        clone立绘.name = Hero_.id;
+                        clone立绘.SetActive(false);
+                    }
+                    else if (Hero_.Unit == "主角2")
+                    {
+                        var 立绘 = __instance.HeroArt.transform.Find("道士").gameObject;
+
+                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, clone立绘.transform.localPosition.y,
+                            clone立绘.transform.localPosition.z);
+                        clone立绘.name = Hero_.id;
+                        clone立绘.SetActive(false);
+                    }
+                    else if (Hero_.Unit == "主角4")
+                    {
+                        var 立绘 = __instance.HeroArt.transform.Find("巫女").gameObject;
+
+                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, clone立绘.transform.localPosition.y,
+                            clone立绘.transform.localPosition.z);
+                        clone立绘.name = Hero_.id;
+                        clone立绘.SetActive(false);
+                    }
+                    else if (Hero_.Unit == "主角5")
+                    {
+                        var 立绘 = __instance.HeroArt.transform.Find("龙妹").gameObject;
+
+                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, clone立绘.transform.localPosition.y,
+                            clone立绘.transform.localPosition.z);
+                        clone立绘.name = Hero_.id;
+                        clone立绘.SetActive(false);
+                    }
+                    else{  
+                        var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
+
+                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, 0f,
+                            clone立绘.transform.localPosition.z);
+                        clone立绘.name = Hero_.id;
+                        clone立绘.SetActive(false);
+                        var ska = clone立绘.GetComponent<SkeletonAnimation>();
+                        
+                        if (ModManager.ModUnitCache.TryGetValue(modName + ".Units", out var units))
+                        {
+                            var unit = units.FirstOrDefault(i => i.id == Hero_.Unit);
+                            if (unit!= null)
+                            {
+                               
+                                if(ModManager.ModSKeletonDataCache.TryGetValue(modName + ".spine."+unit.Pic, out var sda))
+                                    Utils.ChangeSkeletonDataAssetRuntime(sda[0],ska);
+                            }
+                        }
+                        
+                        
+                    }
+                   
+                  
+               //     var ska = clone立绘.GetComponent<SkeletonAnimation>();
 
 
 
                     //SkeletonAnimation sda = clone立绘.GetComponent<SkeletonAnimation>();
+                    
+                    var clonebtn = GameObject.Instantiate(btn, btn.transform.parent);
+                    clonebtn.transform.localPosition = btn.transform.localPosition + new Vector3(oldValue * 1.15f, 0f, 0f);
+                    clonebtn.gameObject.name = Hero_.id;
                     HeroBtns.Add(clonebtn);
-                    Debug.Log("增加按钮");
+                    oldValue += 1;
+                    
+                    var cloneNameGameObject = GameObject.Instantiate(名字GameObject, 名字GameObject.transform.parent);
+                    
+                    cloneNameGameObject.gameObject.name = Hero_.id;
+                  //  cloneNameGameObject.transform
+                  DeckBuildingGame.Utils.SetText(cloneNameGameObject, Hero_.id);
+                  LogInfo("增加了选人界面按钮:"+ Hero_.id);
+                  for (int i = 0;i< cloneNameGameObject.transform.childCount;i++)
+                  {
+                      cloneNameGameObject.transform.GetChild(i).gameObject.SetActive(false);
+                  }
+                  cloneNameGameObject.SetActive(false);
+                  cloneNameGameObject.transform.parent = 名字GameObject.transform.parent;
                 }
             }
         
 
-        foreach (var pair  in ModManager.ModSKeletonDataCache)
+        /*foreach (var pair  in ModManager.ModSKeletonDataCache)
         {
             foreach (var sda in pair.Value)
             {
                 var ska =  __instance.HeroArt.transform.Find("侍卫mod").gameObject.GetComponent<SkeletonAnimation>(); 
                 /*var NameSpace = "firstPlugin";
-                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");#1#
                 Utils.ChangeSkeletonDataAssetRuntime(sda,ska);
            //     Main.LogInfo("替换了 选人界面立绘: "+ pair.Key);
             }
-        }
+        }*/
+        
+      //  return true;
+    }
+
+    /// <summary>
+    /// 此方法原用于初始化时根据不同职业修改UI上的特效 因此补丁补充了Mod角色使用莫三的特效的规则
+    /// </summary>
+    /// <returns></returns>
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(ClassSpriteController), nameof(ClassSpriteController.SetClass))]
+    public static bool UseDefaultCLassSprite(ref string className)
+    {
+        if (className != "侍卫" || className != "道士" || className != "巫女" || className != "龙妹")
+            className = "侍卫";
         
         return true;
     }
-
-/// <summary>
+    
+    
+    /// <summary>
 ///  修改switchHero
 /// </summary>
 /// <param name="type"></param>
@@ -435,6 +536,23 @@ public static bool switchHeroPagePatch(ref GameObject btnClicked, ref bool iSIni
             return true;
         }
     }
+
+[HarmonyPrefix]
+[HarmonyPatch(typeof(DeckBuildingGame.GameManager), nameof(DeckBuildingGame.GameManager.HeroIdxById))]
+public static bool changeHeroIdxById(ref string heroId, ref int __result)
+{
+    if (heroId == "侍卫")
+        __result = 0;
+    else if (heroId == "道士")
+        __result = 1;
+    else if (heroId == "巫女")
+        __result = 2;
+    else if (heroId == "龙妹")
+        __result = 3;
+    else 
+        __result = -1;
+    return false;
+}
     
     public static void LogInfo(object obj) => Main.I.Logger.LogInfo((object) string.Format("{0}{1}", (object) Main.GetIndent(), obj));
 

@@ -26,10 +26,10 @@ public class LoadUnitPrefabPatch
                     Debug.Log(VARIABLE);
                 }
                 Debug.Log("没找到");*/
-                Debug.LogError("没找到"+path);
+               // Debug.LogWarning("没找到"+path);
                 return true;
             }
-            Debug.LogError("找到了"+path);
+            Debug.Log("加载Mod中的单位资源: "+path);
             __result = GameObject.Instantiate(UnitPrefabCacche[path]);
             return false;
         }

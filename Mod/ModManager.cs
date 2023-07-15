@@ -220,6 +220,7 @@ public class ModManager
      public static Dictionary<string, List<SkeletonDataAsset>> ModSKeletonDataCache =
          new Dictionary<string, List<SkeletonDataAsset>>();
 
+     public static Dictionary<string, List<Bonus_>> ModBonusCache = new Dictionary<string, List<Bonus_>>();
 
      private static void LoadModData(ModConfig modConfig)
     {
@@ -273,7 +274,8 @@ public class ModManager
         Debug.Log(CardFilePath);
         if (File.Exists(CardFilePath))
         {
-            c = (Card_[])JArray.Parse(File.ReadAllText(@CardFilePath)).ToObject(typeof(Card_[]));
+           // c = (Card_[])JArray.Parse(File.ReadAllText(@CardFilePath)).ToObject(typeof(Card_[]));
+           c = DeckBuildingGame.JsonHelper.FromJson<Card_>(File.ReadAllText(@CardFilePath));
         }
         /*
         c = JsonConvert.DeserializeObject<Card_>();*/
@@ -296,7 +298,7 @@ public class ModManager
         }
 
         //  var jsonDatatypes = typeof(JsonData).GetFields();
-        foreach (var type in new Type[]{typeof(Unit_[]),typeof(Buff_[]),typeof(Hero_[]),typeof(Troop_[]),typeof(TalentTree_[]),typeof(Hex_[]),typeof(Talent_[])})
+        foreach (var type in new Type[]{typeof(Unit_[]),typeof(Buff_[]),typeof(Hero_[]),typeof(Troop_[]),typeof(TalentTree_[]),typeof(Hex_[]),typeof(Talent_[]),typeof(Bonus_[])})
         {
             if(type == typeof(JsonData))
                 continue;
@@ -343,7 +345,12 @@ public class ModManager
                 if (type == typeof(Talent_[]))
                 {
                     ModTalentCache[modConfig.Name + ".Talents"] = new List<Talent_>(array as Talent_[]){};
-                } 
+                }
+
+                if (type == typeof(Bonus_[]))
+                {
+                    ModBonusCache[modConfig.Name + ".Bonus"] = new List<Bonus_>(array as Bonus_[]){};
+                }
             }
         }
 
