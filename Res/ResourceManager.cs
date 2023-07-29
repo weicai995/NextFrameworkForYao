@@ -213,8 +213,8 @@ namespace NextFrameworkForYao.Res
       Sprite spriteCache;
       if (!this.spriteCache.TryGetValue(((object) texture).GetHashCode(), out spriteCache))
       {
-        float width = 351f;
-        float height = 253f;
+        float width = texture.width;
+        float height = texture.height;
         switch (spriteType)
         {
           case "Skills":
@@ -227,6 +227,24 @@ namespace NextFrameworkForYao.Res
           {
             width = 120f;
             height = 120f;
+            break;
+          }
+          case "UI(Class)":
+          {
+            width = 115f;
+            height = 104f;
+            break;
+          }
+          case "BtnPic":
+          {
+            break;
+          }
+          case "NamePic":
+          {
+            break;
+          }
+          case "StandPic":
+          {
             break;
           }
         }

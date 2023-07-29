@@ -30,10 +30,12 @@ namespace NextFrameworkForYao.Patch;
         {
             Object asset;
            var strings = path.Split('/');
-           var typeName = "CardView";
+           /*var typeName = "CardView";*/
+           var typeName = "";
            if (strings.Length > 1)
            {
-               typeName = strings[0];
+               typeName = strings[strings.Length-1];
+               typeName = typeName.Replace("TalentIcons", "TalentPics");
            }
            // if (!Main.Res.TryGetAsset("assets/" + path.TrimStart("Skills/".ToCharArray()).TrimStart("TalentPics/".ToCharArray()) + ".png", out asset) || !(asset is Texture2D texture)){
            if (!Main.Res.TryGetAsset("assets/" + path + ".png", out asset) || !(asset is Texture2D texture)){
@@ -58,7 +60,7 @@ namespace NextFrameworkForYao.Patch;
         public static bool LoadSprite(string path, ref UnityEngine.Sprite __result)
         {
             Object asset;
-            if (!Main.Res.TryGetAsset("assets/" + path.TrimStart("CardArts/".ToCharArray()) + ".png", out asset) || !(asset is Texture2D texture)){
+            if (!Main.Res.TryGetAsset("assets/" + path + ".png", out asset) || !(asset is Texture2D texture)){
                 /*foreach (var VARIABLE in Main.Res.fileAssets.Keys)
                 {
                     Debug.Log("assets/" + path.TrimStart("CardArts/".ToCharArray()) + ".png");

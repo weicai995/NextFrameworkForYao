@@ -181,19 +181,20 @@ public class Main : BaseUnityPlugin
         }
         foreach (var pair  in ModManager.ModUnitCache)
         {
+            var modName = pair.Key.TrimEnd(".Units".ToCharArray());
             foreach (var Unit_ in pair.Value)
             {
                 /*var NameSpace = "firstPlugin";
                 Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
                 
-                if (Unit_.Pic.Contains("."))
+                /*if (Unit_.Pic.Contains("."))
                 {
                     var modName = Unit_.Pic.Split('.')[0];
                     /*Main.LogError(ModManager.modGroups.Count);
                     foreach (var VARIABLE in ModManager.modGroups)
                     {
                         Main.LogError(VARIABLE.ModConfigs[0].Name);
-                    }*/
+                    }#1#
                     var modGroup = ModManager.modGroups.FirstOrDefault(i => i.ModConfigs[0].Name == modName);
                     if (modGroup == null)
                     {
@@ -222,8 +223,82 @@ public class Main : BaseUnityPlugin
                         GameObject.DontDestroyOnLoad(newUnit);
                         Main.LogInfo("Load UnitPrefab: "+Unit_.Pic);
                     }
-                }
-                
+                }*/
+               
+                    /*Main.LogError(ModManager.modGroups.Count);
+                    foreach (var VARIABLE in ModManager.modGroups)
+                    {
+                        Main.LogError(VARIABLE.ModConfigs[0].Name);
+                    }*/
+                    var modGroup = ModManager.modGroups.FirstOrDefault(i => i.ModConfigs[0].Name == modName);
+                    if (modGroup == null)
+                    {
+                        Main.LogError("Load Unit failed: "+"No such ModGroup called "+modName);
+                        continue;
+                    }
+                    var unitPrafabName = Unit_.Pic;
+        
+                    if (modGroup.ModConfigs.Count == 0)
+                    {
+                        Main.LogInfo("Load Unit failed: "+"No such mod config file for modGroup "+modName);
+                        continue;
+                    }
+                    if (Unit_.Spine && !Directory.Exists(modGroup.ModConfigs[0].Path + @"\Assets\UnitModel\Spine\"+unitPrafabName))
+                    {
+                        Main.LogInfo("Load Unit failed: "+"No such spine file called "+unitPrafabName+" for Unit "+Unit_.id);
+                        continue;
+                    }
+                    else if (!Unit_.Spine && !Directory.Exists(modGroup.ModConfigs[0].Path + @"\Assets\UnitModel\Pic\"))
+                    {
+                        Main.LogInfo("Load Unit failed: "+"No such Pic file called "+unitPrafabName+" for Unit "+Unit_.id);
+                        continue;
+                    }
+                    else 
+                    {
+                        ///主角3 是模板
+                        if(Unit_.Spine){
+                            if (ModManager.ModSKeletonDataCache.TryGetValue(
+                                    modGroup.ModConfigs[0].Name + ".spine." + unitPrafabName,
+                                    out var skeletonDatacache))
+                            {
+                                var newUnit = UnityEngine.Object.Instantiate(ResHelper.GetUnitPrefab("主角3"));
+                                var sda = newUnit.transform.Find("Spine").GetComponent<SkeletonAnimation>();
+                                Utils.ChangeSkeletonDataAssetRuntime(skeletonDatacache[0],sda);
+                                LoadUnitPrefabPatch.UnitPrefabCacche[Unit_.Pic] = newUnit;
+                                newUnit.SetActive(false);
+                                GameObject.DontDestroyOnLoad(newUnit);
+                                Main.LogInfo("Load UnitPrefab with spine: "+Unit_.Pic);
+                            }
+                        }
+                        else
+                        {
+                            
+                            var newUnit = UnityEngine.Object.Instantiate(ResHelper.GetUnitPrefab("招的符尸"));
+                         //   var sda = newUnit.transform.Find("Spine").GetComponent<SpriteRenderer>();
+                        //    sda.enabled = false;
+                           // Utils.ChangeSkeletonDataAssetRuntime(ModManager.ModSKeletonDataCache[modGroup.ModConfigs[0].Name + ".spine."+unitPrafabName][0],sda);
+                           var sr =  newUnit.transform.Find("Spine").gameObject.GetComponent<SpriteRenderer>();
+                           if (!Main.Res.TryGetAsset("assets/UnitModel/Pic/" + Unit_.Pic + ".png", out var asset) || !(asset is Texture2D texture))
+                           {
+                               LogError("找不到角色图片: "+"assets/UnitModel/Pic/" + Unit_.Pic + ".png");
+                               sr.sprite = null;
+                           }
+                           else{
+                               /*LogError("找到角色图片: "+"assets/" + Unit_.Pic + ".png");
+                              var sa = newUnit.transform.Find("Spine").gameObject.GetComponent<SkeletonAnimation>();
+                              GameObject.DestroyImmediate(sa);
+                              var mf = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshFilter>();
+                              GameObject.DestroyImmediate(mf);
+                              var mr = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshRenderer>();
+                              GameObject.DestroyImmediate(mr);*/
+                               sr.sprite = Main.Res.GetSpriteCache(texture);
+                           }
+                           LoadUnitPrefabPatch.UnitPrefabCacche[Unit_.Pic] = newUnit;
+                           newUnit.SetActive(false);
+                           GameObject.DontDestroyOnLoad(newUnit);
+                           Main.LogInfo("Load UnitPrefab with pic: "+Unit_.Pic);
+                        }
+                    }
                 
                 DataManager.Instance.导入Mod(Unit_);
                 ///需要创建UnitPrefab的场合
@@ -372,6 +447,7 @@ public class Main : BaseUnityPlugin
     {
         
         List<GameObject> HeroBtns= Traverse.Create(__instance).Field("HeroBtns").GetValue() as List<GameObject>;
+        Debug.LogError("length : "+HeroBtns.Count);
         var btn = HeroBtns[0];
         var 名字GameObject = btn.transform.parent.parent.Find("HeroInfos").Find("人名").Find("HeroName").Find("侍卫").gameObject;
 
@@ -380,70 +456,206 @@ public class Main : BaseUnityPlugin
             foreach (var pair in ModManager.ModHeroCache)
             {
                 var modName = pair.Key.TrimEnd(".Heros".ToCharArray());
+             
                 foreach (var Hero_ in pair.Value)
                 {
-                    if (Hero_.Unit == "主角3")
+                  
+                    if (Hero_.id == "侍卫" || Hero_.id == "道士" || Hero_.id == "巫女" || Hero_.id == "龙妹") continue;
+
+
+                    Sprite namePicSprite = null;
+                    float namePicLocX = 0;
+                    float namePicLocY = 0;
+                    float namePicSizeX = 0;
+                    float namePicSizeY = 0;
+                    Sprite btnPickPicSprite = null;
+                    Sprite btnUnpickPicSprite = null;
+                    
+                    // 如果没有修改立绘的需求
+                    if (Hero_.ModData==null)
                     {
-                        var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
-
-                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
-                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, clone立绘.transform.localPosition.y,
-                            clone立绘.transform.localPosition.z);
-                        clone立绘.name = Hero_.id;
-                        clone立绘.SetActive(false);
-                    }
-                    else if (Hero_.Unit == "主角2")
-                    {
-                        var 立绘 = __instance.HeroArt.transform.Find("道士").gameObject;
-
-                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
-                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, clone立绘.transform.localPosition.y,
-                            clone立绘.transform.localPosition.z);
-                        clone立绘.name = Hero_.id;
-                        clone立绘.SetActive(false);
-                    }
-                    else if (Hero_.Unit == "主角4")
-                    {
-                        var 立绘 = __instance.HeroArt.transform.Find("巫女").gameObject;
-
-                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
-                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, clone立绘.transform.localPosition.y,
-                            clone立绘.transform.localPosition.z);
-                        clone立绘.name = Hero_.id;
-                        clone立绘.SetActive(false);
-                    }
-                    else if (Hero_.Unit == "主角5")
-                    {
-                        var 立绘 = __instance.HeroArt.transform.Find("龙妹").gameObject;
-
-                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
-                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, clone立绘.transform.localPosition.y,
-                            clone立绘.transform.localPosition.z);
-                        clone立绘.name = Hero_.id;
-                        clone立绘.SetActive(false);
-                    }
-                    else{  
-                        var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
-
-                        var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
-                        clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, 0f,
-                            clone立绘.transform.localPosition.z);
-                        clone立绘.name = Hero_.id;
-                        clone立绘.SetActive(false);
-                        var ska = clone立绘.GetComponent<SkeletonAnimation>();
-                        
-                        if (ModManager.ModUnitCache.TryGetValue(modName + ".Units", out var units))
+                      
+                        if (Hero_.Unit == "主角3")
                         {
-                            var unit = units.FirstOrDefault(i => i.id == Hero_.Unit);
-                            if (unit!= null)
-                            {
-                               
-                                if(ModManager.ModSKeletonDataCache.TryGetValue(modName + ".spine."+unit.Pic, out var sda))
-                                    Utils.ChangeSkeletonDataAssetRuntime(sda[0],ska);
-                            }
+                            var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
+
+                            var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                            clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x,
+                                clone立绘.transform.localPosition.y,
+                                clone立绘.transform.localPosition.z);
+                            clone立绘.name = Hero_.id;
+                            clone立绘.SetActive(false);
+                        }
+                        else if (Hero_.Unit == "主角2")
+                        {
+                            var 立绘 = __instance.HeroArt.transform.Find("道士").gameObject;
+
+                            var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                            clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x,
+                                clone立绘.transform.localPosition.y,
+                                clone立绘.transform.localPosition.z);
+                            clone立绘.name = Hero_.id;
+                            clone立绘.SetActive(false);
+                        }
+                        else if (Hero_.Unit == "主角4")
+                        {
+                            var 立绘 = __instance.HeroArt.transform.Find("巫女").gameObject;
+
+                            var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                            clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x,
+                                clone立绘.transform.localPosition.y,
+                                clone立绘.transform.localPosition.z);
+                            clone立绘.name = Hero_.id;
+                            clone立绘.SetActive(false);
+                        }
+                        else if (Hero_.Unit == "主角5")
+                        {
+                            var 立绘 = __instance.HeroArt.transform.Find("龙妹").gameObject;
+
+                            var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                            clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x,
+                                clone立绘.transform.localPosition.y,
+                                clone立绘.transform.localPosition.z);
+                            clone立绘.name = Hero_.id;
+                            clone立绘.SetActive(false);
                         }
                         
-                        
+                        Debug.LogError("A3");
+                    }
+                    else
+                    {
+                        var modData = Hero_.ModData.Split('，');
+                        if(modData.Length>=13)
+                        {
+                            var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
+                            var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
+                            clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, 0f,
+                                clone立绘.transform.localPosition.z);
+                            clone立绘.name = Hero_.id;
+                            clone立绘.SetActive(false);
+                            var ska = clone立绘.GetComponent<SkeletonAnimation>();
+                            
+                            
+                            try
+                            {
+                                var useSpine = bool.Parse(modData[0]);
+                                var standPicPath = modData[1];
+                            var standPicLocX = float.Parse(modData[2]);
+                            var standPicLocY = float.Parse(modData[3]);
+                            var standPicSizeX = float.Parse(modData[4]);
+                            var standPicSizeY =float.Parse(modData[5]);
+                             var namePicPath = modData[6];
+                             namePicLocX = float.Parse(modData[7]);
+                             namePicLocY = float.Parse(modData[8]);
+                             namePicSizeX =float.Parse(modData[9]);
+                             namePicSizeY = float.Parse(modData[10]);
+                             var btnPickPicPath = modData[11];
+                             var btnUnpickPath = modData[12];
+
+                            clone立绘.transform.localPosition = new Vector3(standPicLocX, standPicLocY, clone立绘.transform.localPosition.z);
+                            clone立绘.transform.localScale = new Vector3(standPicSizeX, standPicSizeY, clone立绘.transform.localScale.z);
+                            
+                            ///大立绘使用 spine的场合
+                          //  if (standPicPath.StartsWith("Spine_"))
+                           
+                          if(useSpine)
+                          {
+                                if (ModManager.ModUnitCache.TryGetValue(modName + ".Units", out var units))
+                                {
+                                
+                                    var unit = units.FirstOrDefault(i => i.id == Hero_.Unit);
+                                    if (unit!= null)
+                                    {
+                                        if(ModManager.ModSKeletonDataCache.TryGetValue(modName + ".StandPicSpine."+ standPicPath, out var sda))
+                                            Utils.ChangeSkeletonDataAssetRuntime(sda[0],ska);
+                                    }
+                                }
+                            }
+                            ///大立绘使用 png图片的场合
+                            else
+                            {
+                                ///先删除spine部分
+                                var spc = clone立绘.GetComponent<StandingPicController>();
+                                GameObject.DestroyImmediate(spc);
+                                var sa = clone立绘.GetComponent<SkeletonAnimation>();
+                                GameObject.DestroyImmediate(sa);
+                                var mr = clone立绘.GetComponent<MeshRenderer>();
+                                GameObject.DestroyImmediate(mr);
+                                var mf = clone立绘.GetComponent<MeshFilter>();
+                                GameObject.DestroyImmediate(mf);
+                                
+                                
+                                Sprite standPicSprite;
+                                if (!Main.Res.TryGetAsset("assets/UI/StandPic/" + standPicPath + ".png", out var asset) || !(asset is Texture2D texture))
+                                {
+                                    LogError("找不到角色图片: "+"assets/UI/StandPic/" + standPicPath + ".png");
+                                }
+                                else{
+                                    /*LogError("找到角色图片: "+"assets/" + Unit_.Pic + ".png");
+                                   var sa = newUnit.transform.Find("Spine").gameObject.GetComponent<SkeletonAnimation>();
+                                   GameObject.DestroyImmediate(sa);
+                                   var mf = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshFilter>();
+                                   GameObject.DestroyImmediate(mf);
+                                   var mr = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshRenderer>();
+                                   GameObject.DestroyImmediate(mr);*/
+                                    standPicSprite = Main.Res.GetSpriteCache(texture);
+                                   var sr = clone立绘.AddComponent<SpriteRenderer>();
+                                    sr.sprite = standPicSprite;
+                                    Debug.Log("添加sprite成功："+ clone立绘.transform.localPosition);
+                                }
+                            }
+                            
+                            
+                          
+                            if (!Main.Res.TryGetAsset("assets/UI/NamePic/" + namePicPath + ".png", out var asset2) || !(asset2 is Texture2D texture2))
+                            {
+                                LogError("找不到角色图片: "+"assets/UI/NamePic/" + namePicPath + ".png");
+                            }
+                            else{
+                                /*LogError("找到角色图片: "+"assets/" + Unit_.Pic + ".png");
+                               var sa = newUnit.transform.Find("Spine").gameObject.GetComponent<SkeletonAnimation>();
+                               GameObject.DestroyImmediate(sa);
+                               var mf = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshFilter>();
+                               GameObject.DestroyImmediate(mf);
+                               var mr = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshRenderer>();
+                               GameObject.DestroyImmediate(mr);*/
+                                namePicSprite = Main.Res.GetSpriteCache(texture2);
+                            }
+                            if (!Main.Res.TryGetAsset("assets/UI/BtnPic/" + btnPickPicPath + ".png", out var asset3) || !(asset3 is Texture2D texture3))
+                            {
+                                LogError("找不到角色图片: "+"assets/UI/BtnPic/" + btnPickPicPath + ".png");
+                            }
+                            else{
+                                /*LogError("找到角色图片: "+"assets/" + Unit_.Pic + ".png");
+                               var sa = newUnit.transform.Find("Spine").gameObject.GetComponent<SkeletonAnimation>();
+                               GameObject.DestroyImmediate(sa);
+                               var mf = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshFilter>();
+                               GameObject.DestroyImmediate(mf);
+                               var mr = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshRenderer>();
+                               GameObject.DestroyImmediate(mr);*/
+                                btnPickPicSprite = Main.Res.GetSpriteCache(texture3);
+                            }
+                            if (!Main.Res.TryGetAsset("assets/UI/BtnPic/" + btnUnpickPath + ".png", out var asset4) || !(asset4 is Texture2D texture4))
+                            {
+                                LogError("找不到角色图片: "+"assets/UI/BtnPic/" + btnUnpickPath + ".png");
+                            }
+                            else{
+                                /*LogError("找到角色图片: "+"assets/" + Unit_.Pic + ".png");
+                               var sa = newUnit.transform.Find("Spine").gameObject.GetComponent<SkeletonAnimation>();
+                               GameObject.DestroyImmediate(sa);
+                               var mf = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshFilter>();
+                               GameObject.DestroyImmediate(mf);
+                               var mr = newUnit.transform.Find("Spine").gameObject.GetComponent<MeshRenderer>();
+                               GameObject.DestroyImmediate(mr);*/
+                                btnUnpickPicSprite = Main.Res.GetSpriteCache(texture4);
+                            }
+
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.LogException(e);
+                            } 
+                        }
                     }
                    
                   
@@ -456,6 +668,8 @@ public class Main : BaseUnityPlugin
                     var clonebtn = GameObject.Instantiate(btn, btn.transform.parent);
                     clonebtn.transform.localPosition = btn.transform.localPosition + new Vector3(oldValue * 1.15f, 0f, 0f);
                     clonebtn.gameObject.name = Hero_.id;
+                    clonebtn.transform.Find("Picked").GetComponent<SpriteRenderer>().sprite = btnPickPicSprite;
+                    clonebtn.transform.Find("Unpicked").GetComponent<SpriteRenderer>().sprite = btnUnpickPicSprite;
                     HeroBtns.Add(clonebtn);
                     oldValue += 1;
                     
@@ -471,6 +685,12 @@ public class Main : BaseUnityPlugin
                   }
                   cloneNameGameObject.SetActive(false);
                   cloneNameGameObject.transform.parent = 名字GameObject.transform.parent;
+                  cloneNameGameObject.transform.localPosition = new Vector3(namePicLocX, namePicLocY,
+                      cloneNameGameObject.transform.localPosition.z);
+                  cloneNameGameObject.transform.localScale = new Vector3(namePicSizeX, namePicSizeY,
+                      cloneNameGameObject.transform.localPosition.z);
+                  cloneNameGameObject.transform.Find("莫三中文").GetComponent<SpriteRenderer>().sprite = namePicSprite;
+                  cloneNameGameObject.transform.Find("莫三英文").GetComponent<SpriteRenderer>().sprite = namePicSprite;
                 }
             }
         
@@ -573,3 +793,4 @@ public static bool changeHeroIdxById(ref string heroId, ref int __result)
     
     
 }
+

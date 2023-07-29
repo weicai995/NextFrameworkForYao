@@ -26,7 +26,7 @@ public class LoadUnitPrefabPatch
                     Debug.Log(VARIABLE);
                 }
                 Debug.Log("没找到");*/
-               // Debug.LogWarning("没找到"+path);
+                //Debug.LogError("没找到"+path);
                 return true;
             }
             Debug.Log("加载Mod中的单位资源: "+path);

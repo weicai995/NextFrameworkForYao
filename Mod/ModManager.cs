@@ -135,9 +135,9 @@ public class ModManager
     {
       if (resetModState)
         ModManager.modGroups.Clear();
-      Main.LogInfo(111);
+    //  Main.LogInfo(111);
       DirectoryInfo directoryInfo1 = new DirectoryInfo(Main.PathLocalModsDir.Value);
-      Main.LogInfo("222: "+Main.PathLocalModsDir.Value);
+   //   Main.LogInfo("222: "+Main.PathLocalModsDir.Value);
       foreach (DirectoryInfo directoryInfo2 in WorkshopTool.GetAllModDirectory())
       {
           Main.LogInfo(directoryInfo2.FullName);
@@ -357,7 +357,8 @@ public class ModManager
       //  var sda = Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\spine\MarisaModelv3", "MarisaModelv3");
         #endregion
 
-        DirectoryInfo directoryInfo = new DirectoryInfo(modConfig.Path + @"\Assets\spine");
+        /// 把单位模型中的spine数据全部预加载
+        DirectoryInfo directoryInfo = new DirectoryInfo(modConfig.Path + @"\Assets\UnitModel\Spine\");
         if (directoryInfo.Exists)
         {
             foreach (var subDir in directoryInfo.GetDirectories())
@@ -367,7 +368,7 @@ public class ModManager
                     if (fileInfo.Extension.EndsWith(".json"))
                     {
                        var fileName = fileInfo.Name.TrimEnd(".json".ToCharArray());
-                       var skeletonDataAsset =   Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\spine\"+subDir.Name, fileName);
+                       var skeletonDataAsset =   Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\UnitModel\Spine\"+subDir.Name, fileName);
                        if (skeletonDataAsset != null)
                        {
                            if (ModSKeletonDataCache.TryGetValue(modConfig.Name + ".spine."+fileName, out var cards))
@@ -383,9 +384,35 @@ public class ModManager
                 }
             }
             // var skeletonData =  Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\spine\MarisaModelv3", "MarisaModelv3");;// Main.LoadSkeletonData(modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.atlas",modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.json");
-           
         }
-        
+        /// 把UI大立绘中的spine数据全部预加载
+        directoryInfo = new DirectoryInfo(modConfig.Path + @"\Assets\UI\StandPic\");
+        if (directoryInfo.Exists)
+        {
+            foreach (var subDir in directoryInfo.GetDirectories())
+            {
+                foreach (var fileInfo in subDir.GetFiles())
+                {
+                    if (fileInfo.Extension.EndsWith(".json"))
+                    {
+                        var fileName = fileInfo.Name.TrimEnd(".json".ToCharArray());
+                        var skeletonDataAsset =   Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\UI\StandPic\"+subDir.Name, fileName);
+                        if (skeletonDataAsset != null)
+                        {
+                            if (ModSKeletonDataCache.TryGetValue(modConfig.Name + ".StandPicSpine."+fileName, out var cards))
+                            {
+                                cards.Add(skeletonDataAsset);
+                            }
+                            else
+                            {
+                                ModSKeletonDataCache[modConfig.Name + ".StandPicSpine."+fileName] = new List<SkeletonDataAsset>(){skeletonDataAsset};
+                            }
+                        }
+                    }
+                }
+            }
+            // var skeletonData =  Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\spine\MarisaModelv3", "MarisaModelv3");;// Main.LoadSkeletonData(modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.atlas",modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.json");
+        }
         
         Main.Res.CacheAssetDir(modConfig.Path + "\\Assets");
       }
