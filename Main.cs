@@ -243,7 +243,7 @@ public class Main : BaseUnityPlugin
                         Main.LogInfo("Load Unit failed: "+"No such mod config file for modGroup "+modName);
                         continue;
                     }
-                    if (Unit_.Spine && !Directory.Exists(modGroup.ModConfigs[0].Path + @"\Assets\UnitModel\Spine\"+unitPrafabName))
+                    /*if (Unit_.Spine && !Directory.Exists(modGroup.ModConfigs[0].Path + @"\Assets\UnitModel\Spine\"+unitPrafabName))
                     {
                         Main.LogInfo("Load Unit failed: "+"No such spine file called "+unitPrafabName+" for Unit "+Unit_.id);
                         continue;
@@ -252,7 +252,7 @@ public class Main : BaseUnityPlugin
                     {
                         Main.LogInfo("Load Unit failed: "+"No such Pic file called "+unitPrafabName+" for Unit "+Unit_.id);
                         continue;
-                    }
+                    }*/
                     else 
                     {
                         ///主角3 是模板
@@ -264,6 +264,14 @@ public class Main : BaseUnityPlugin
                                 var newUnit = UnityEngine.Object.Instantiate(ResHelper.GetUnitPrefab("主角3"));
                                 var sda = newUnit.transform.Find("Spine").GetComponent<SkeletonAnimation>();
                                 Utils.ChangeSkeletonDataAssetRuntime(skeletonDatacache[0],sda);
+                                LoadUnitPrefabPatch.UnitPrefabCacche[Unit_.Pic] = newUnit;
+                                newUnit.SetActive(false);
+                                GameObject.DontDestroyOnLoad(newUnit);
+                                Main.LogInfo("Load UnitPrefab with spine: "+Unit_.Pic);
+                            }
+                            else
+                            {
+                                var newUnit = UnityEngine.Object.Instantiate(ResHelper.GetUnitPrefab(unitPrafabName));
                                 LoadUnitPrefabPatch.UnitPrefabCacche[Unit_.Pic] = newUnit;
                                 newUnit.SetActive(false);
                                 GameObject.DontDestroyOnLoad(newUnit);
@@ -525,8 +533,7 @@ public class Main : BaseUnityPlugin
                     else
                     {
                         var modData = Hero_.ModData.Split('，');
-                        if(modData.Length>=13)
-                        {
+                
                             var 立绘 = __instance.HeroArt.transform.Find("侍卫").gameObject;
                             var clone立绘 = GameObject.Instantiate(立绘, 立绘.transform.parent);
                             clone立绘.transform.localPosition = new Vector3(clone立绘.transform.localPosition.x, 0f,
@@ -536,22 +543,37 @@ public class Main : BaseUnityPlugin
                             var ska = clone立绘.GetComponent<SkeletonAnimation>();
                             
                             
+                            var standPicPath= "";
+                            var standPicLocX =  0f;
+                            var standPicLocY =  0f;
+                            var standPicSizeX = 0f;
+                            var standPicSizeY = 0f;
+                            var namePicPath = "";
+                            var btnPickPicPath = "";
+                            var btnUnpickPath = "";
+                            var useSpine = false;
                             try
+                            { 
+                              standPicPath = modData[0];
+                              standPicLocX =  float.Parse(modData[1]);
+                              standPicLocY =  float.Parse(modData[2]);
+                              standPicSizeX = float.Parse(modData[3]);
+                              standPicSizeY = float.Parse(modData[4]);
+                              namePicPath = modData[5];
+                             namePicLocX = float.Parse(modData[6]);
+                             namePicLocY = float.Parse(modData[7]);
+                             namePicSizeX =float.Parse(modData[8]);
+                             namePicSizeY = float.Parse(modData[9]);
+                              btnPickPicPath = modData[10];
+                              btnUnpickPath = modData[11];
+                              useSpine = bool.Parse(modData[12]);
+                             
+                            }
+                            catch (Exception e)
                             {
-                                var useSpine = bool.Parse(modData[0]);
-                                var standPicPath = modData[1];
-                            var standPicLocX = float.Parse(modData[2]);
-                            var standPicLocY = float.Parse(modData[3]);
-                            var standPicSizeX = float.Parse(modData[4]);
-                            var standPicSizeY =float.Parse(modData[5]);
-                             var namePicPath = modData[6];
-                             namePicLocX = float.Parse(modData[7]);
-                             namePicLocY = float.Parse(modData[8]);
-                             namePicSizeX =float.Parse(modData[9]);
-                             namePicSizeY = float.Parse(modData[10]);
-                             var btnPickPicPath = modData[11];
-                             var btnUnpickPath = modData[12];
-
+                                Debug.LogException(e);
+                            }
+                             
                             clone立绘.transform.localPosition = new Vector3(standPicLocX, standPicLocY, clone立绘.transform.localPosition.z);
                             clone立绘.transform.localScale = new Vector3(standPicSizeX, standPicSizeY, clone立绘.transform.localScale.z);
                             
@@ -560,6 +582,7 @@ public class Main : BaseUnityPlugin
                            
                           if(useSpine)
                           {
+                              Debug.Log("使用spine");
                                 if (ModManager.ModUnitCache.TryGetValue(modName + ".Units", out var units))
                                 {
                                 
@@ -568,6 +591,7 @@ public class Main : BaseUnityPlugin
                                     {
                                         if(ModManager.ModSKeletonDataCache.TryGetValue(modName + ".StandPicSpine."+ standPicPath, out var sda))
                                             Utils.ChangeSkeletonDataAssetRuntime(sda[0],ska);
+                                        Debug.Log("加载立绘spine");
                                     }
                                 }
                             }
@@ -650,12 +674,8 @@ public class Main : BaseUnityPlugin
                                 btnUnpickPicSprite = Main.Res.GetSpriteCache(texture4);
                             }
 
-                            }
-                            catch (Exception e)
-                            {
-                                Debug.LogException(e);
-                            } 
-                        }
+                             
+                        
                     }
                    
                   
