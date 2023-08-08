@@ -216,6 +216,18 @@ public class ModManager
      public static Dictionary<string, List<Card_>> ModCardsCache = new Dictionary<string, List<Card_>>();
      public static Dictionary<string, Type> ModTypeCache = new Dictionary<string, Type>();
      public static Dictionary<string, GameObject> ModPrefabCache = new Dictionary<string, GameObject>();
+     
+     
+     
+     public static Dictionary<string, List<System_>> ModSystemCache = new Dictionary<string, List<System_>>();
+     public static Dictionary<string, List<Sound_>> ModSoundCache = new Dictionary<string, List<Sound_>>();
+     public static Dictionary<string, List<Ascension_>> ModAscension = new Dictionary<string, List<Ascension_>>();
+     public static Dictionary<string, List<Dialogue_>> ModDialogue = new Dictionary<string, List<Dialogue_>>();
+     public static Dictionary<string, List<DialogueTiming_>> ModDialogueTiming = new Dictionary<string, List<DialogueTiming_>>();
+     public static Dictionary<string, List<HeroLevel_>> ModHeroLevel = new Dictionary<string, List<HeroLevel_>>();
+     public static Dictionary<string, List<Achievement_>> ModAchievement = new Dictionary<string, List<Achievement_>>();
+     public static Dictionary<string, List<Challange_>> ModChallenge = new Dictionary<string, List<Challange_>>();
+     
 
      public static Dictionary<string, List<SkeletonDataAsset>> ModSKeletonDataCache =
          new Dictionary<string, List<SkeletonDataAsset>>();
@@ -298,7 +310,11 @@ public class ModManager
         }
 
         //  var jsonDatatypes = typeof(JsonData).GetFields();
-        foreach (var type in new Type[]{typeof(Unit_[]),typeof(Buff_[]),typeof(Hero_[]),typeof(Troop_[]),typeof(TalentTree_[]),typeof(Hex_[]),typeof(Talent_[]),typeof(Bonus_[])})
+        foreach (var type in new Type[]
+                 {
+                     typeof(Unit_[]),typeof(Buff_[]),typeof(Hero_[]),typeof(Troop_[]),typeof(TalentTree_[]),typeof(Hex_[]),typeof(Talent_[]),typeof(Bonus_[]),
+                     typeof(System_[]),typeof(Sound_[]),typeof(Ascension_[]),typeof(Dialogue_[]),typeof(DialogueTiming_[]),typeof(HeroLevel_[]),typeof(Achievement_[]),typeof(Challange_[])
+                 })
         {
             if(type == typeof(JsonData))
                 continue;
@@ -351,6 +367,42 @@ public class ModManager
                 {
                     ModBonusCache[modConfig.Name + ".Bonus"] = new List<Bonus_>(array as Bonus_[]){};
                 }
+                
+                #region system表
+                if (type == typeof(System_[]))
+                {
+                    ModSystemCache[modConfig.Name + ".System"] = new List<System_>(array as System_[]){};
+                }
+                if (type == typeof(Sound_[]))
+                {
+                    ModSoundCache[modConfig.Name + ".Sound"] = new List<Sound_>(array as Sound_[]){};
+                }
+                if (type == typeof(Ascension_[]))
+                {
+                    ModAscension[modConfig.Name + ".Ascension"] = new List<Ascension_>(array as Ascension_[]){};
+                }
+                if (type == typeof(Dialogue_[]))
+                {
+                    ModDialogue[modConfig.Name + ".Dialogue"] = new List<Dialogue_>(array as Dialogue_[]){};
+                }
+                if (type == typeof(DialogueTiming_[]))
+                {
+                    ModDialogueTiming[modConfig.Name + ".Bonus"] = new List<DialogueTiming_>(array as DialogueTiming_[]){};
+                }
+                if (type == typeof(HeroLevel_[]))
+                {
+                    ModHeroLevel[modConfig.Name + ".Bonus"] = new List<HeroLevel_>(array as HeroLevel_[]){};
+                }
+                if (type == typeof(Achievement_[]))
+                {
+                    ModAchievement[modConfig.Name + ".Bonus"] = new List<Achievement_>(array as Achievement_[]){};
+                }
+                if (type == typeof(Challange_[]))
+                {
+                    ModChallenge[modConfig.Name + ".Bonus"] = new List<Challange_>(array as Challange_[]){};
+                }
+                
+                #endregion
             }
         }
 
@@ -389,14 +441,13 @@ public class ModManager
         directoryInfo = new DirectoryInfo(modConfig.Path + @"\Assets\UI\StandPic\");
         if (directoryInfo.Exists)
         {
-            foreach (var subDir in directoryInfo.GetDirectories())
-            {
-                foreach (var fileInfo in subDir.GetFiles())
+            
+                foreach (var fileInfo in directoryInfo.GetFiles())
                 {
                     if (fileInfo.Extension.EndsWith(".json"))
                     {
                         var fileName = fileInfo.Name.TrimEnd(".json".ToCharArray());
-                        var skeletonDataAsset =   Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\UI\StandPic\"+subDir.Name, fileName);
+                        var skeletonDataAsset =   Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\UI\StandPic\", fileName);
                         if (skeletonDataAsset != null)
                         {
                             if (ModSKeletonDataCache.TryGetValue(modConfig.Name + ".StandPicSpine."+fileName, out var cards))
@@ -410,7 +461,7 @@ public class ModManager
                         }
                     }
                 }
-            }
+            
             // var skeletonData =  Utils.LoadModSkeletonDataAssetRuntime(modConfig.Path + @"\Assets\spine\MarisaModelv3", "MarisaModelv3");;// Main.LoadSkeletonData(modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.atlas",modConfig.Path+@"\Assets\spine\MarisaModelv3\MarisaModelv3.json");
         }
         

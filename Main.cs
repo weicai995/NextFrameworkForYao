@@ -392,6 +392,87 @@ public class Main : BaseUnityPlugin
             }
         }
         
+        foreach (var pair in ModManager.ModSystemCache)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add System: " + (bonus).id);
+            }
+        }
+        foreach (var pair in ModManager.ModSoundCache)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add Sound: " + (bonus).id);
+            }
+        }
+        foreach (var pair in ModManager.ModAscension)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add Ascension: " + (bonus).id);
+            }
+        }
+        foreach (var pair in ModManager.ModDialogue)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add dialogue: " + (bonus).id);
+            }
+        }
+        
+        foreach (var pair in ModManager.ModDialogueTiming)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add DialogueTiming: " + (bonus).id);
+            }
+        }
+        foreach (var pair in ModManager.ModHeroLevel)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add HeroLevel: " + (bonus).id);
+            }
+        }
+        foreach (var pair in ModManager.ModAchievement)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add Achievement: " + (bonus).id);
+            }
+        }
+        foreach (var pair in ModManager.ModChallenge)
+        {
+            foreach (var bonus in pair.Value)
+            {
+                /*var NameSpace = "firstPlugin";
+                Type t = Type.GetType($"{NameSpace}.{card_.Type}");*/
+                DataManager.Instance.导入Mod(bonus);
+                Main.LogInfo("Add Challenge: " + (bonus).id);
+            }
+        }
         /*Logger.LogInfo(dataList.Length);*/
         LogInfo("Mod加载完毕");
     }
@@ -554,6 +635,7 @@ public class Main : BaseUnityPlugin
                             var useSpine = false;
                             try
                             { 
+                              //  Debug.LogError("Moddatalength: "+ modData.Length);
                               standPicPath = modData[0];
                               standPicLocX =  float.Parse(modData[1]);
                               standPicLocY =  float.Parse(modData[2]);
@@ -589,9 +671,16 @@ public class Main : BaseUnityPlugin
                                     var unit = units.FirstOrDefault(i => i.id == Hero_.Unit);
                                     if (unit!= null)
                                     {
-                                        if(ModManager.ModSKeletonDataCache.TryGetValue(modName + ".StandPicSpine."+ standPicPath, out var sda))
-                                            Utils.ChangeSkeletonDataAssetRuntime(sda[0],ska);
-                                        Debug.Log("加载立绘spine");
+                                        if (ModManager.ModSKeletonDataCache.TryGetValue(
+                                                modName + ".StandPicSpine." + standPicPath, out var sda))
+                                        {
+                                            Utils.ChangeSkeletonDataAssetRuntime(sda[0], ska);
+                                            Debug.Log("加载立绘spine");
+                                        }
+                                        else
+                                        {
+                                            Debug.Log("无法加载spine： "+ modName + ".StandPicSpine." + standPicPath);
+                                        }
                                     }
                                 }
                             }
@@ -734,7 +823,7 @@ public class Main : BaseUnityPlugin
     /// 此方法原用于初始化时根据不同职业修改UI上的特效 因此补丁补充了Mod角色使用莫三的特效的规则
     /// </summary>
     /// <returns></returns>
-    [HarmonyPrefix]
+    /*[HarmonyPrefix]
     [HarmonyPatch(typeof(ClassSpriteController), nameof(ClassSpriteController.SetClass))]
     public static bool UseDefaultCLassSprite(ref string className)
     {
@@ -742,7 +831,7 @@ public class Main : BaseUnityPlugin
             className = "侍卫";
         
         return true;
-    }
+    }*/
     
     
     /// <summary>
