@@ -9,12 +9,26 @@
   ```
   plugins
   └── Next
-   └── mod测试                 PatchMod文件夹
+   └── mod测试                 	    PatchMod文件夹
        ├── Assets                  Mod美术资源文件夹 （用于存放spine等美术资源）
+       │	 └── TalentPics          心法大图片
+       │	 └── TalentIcons         心法小图标
+       │	 └── UI(Class)           游戏内与职业相关的一些UI图标（主要为卡面背景，费用图标等）
+       │	 └── UI                  一些其他的UI(主要为选人界面的UI)
+       │	 │	 └── StandPic	     选人界面的大立绘，可以是组成spine的atlas，json，png文件 或直接放	   │   │   │				   png图片
+       │	 │	 └── NamePic		 选人界面的名字图片
+       │	 │	 └── BtnPic          选人界面的按钮图片，需要两张分别为选中时与未选中的状态。
+       │	 └── CardArts			 卡图
+       │	 └── Skills              角色技能的图标
+       │	 └── Items               道具的图标
+       │	 └── EventPictures       事件相关的图片
+       │	 └── UnitModel           新角色模型的文件夹，可以使用spine或者png图片，具体可以查看5.2
+       │	 │	 └── Spine           存放spine美术资源
+       │	 │	 └── Pic             存放角色png图片
        ├── Config                  Mod配置文件夹
-       │   └── modConfig.json          Mod描述文件
+       │   └── modConfig.json      Mod描述文件
        ├── Data                    游戏数据文件夹 （用于存放导表后得到的json文件）
-       └── Script                     脚本文件夹 （用于存放游戏脚本）
+       └── Script                  脚本文件夹 （用于存放游戏脚本）
   ```
 
   Next Patch的文件夹以 mod 开头，如 mod测试
@@ -90,4 +104,3 @@ Assets\spine\名称\名称.json
 Assets\spine\名称\名称.png
 Assets\spine\名称\名称.atlas.txt
 ```
-

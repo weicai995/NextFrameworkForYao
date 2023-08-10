@@ -267,7 +267,7 @@ public class Main : BaseUnityPlugin
                                 LoadUnitPrefabPatch.UnitPrefabCacche[Unit_.Pic] = newUnit;
                                 newUnit.SetActive(false);
                                 GameObject.DontDestroyOnLoad(newUnit);
-                                Main.LogInfo("Load UnitPrefab with spine: "+Unit_.Pic);
+                                Main.LogInfo("Load UnitPrefab "+ Unit_.Name+"with spine: "+Unit_.Pic);
                             }
                             else
                             {
@@ -275,7 +275,7 @@ public class Main : BaseUnityPlugin
                                 LoadUnitPrefabPatch.UnitPrefabCacche[Unit_.Pic] = newUnit;
                                 newUnit.SetActive(false);
                                 GameObject.DontDestroyOnLoad(newUnit);
-                                Main.LogInfo("Load UnitPrefab with spine: "+Unit_.Pic);
+                                Main.LogInfo("Load UnitPrefab "+ Unit_.Name+"with spine: "+Unit_.Pic);
                             }
                         }
                         else
@@ -536,7 +536,6 @@ public class Main : BaseUnityPlugin
     {
         
         List<GameObject> HeroBtns= Traverse.Create(__instance).Field("HeroBtns").GetValue() as List<GameObject>;
-        Debug.LogError("length : "+HeroBtns.Count);
         var btn = HeroBtns[0];
         var 名字GameObject = btn.transform.parent.parent.Find("HeroInfos").Find("人名").Find("HeroName").Find("侍卫").gameObject;
 
@@ -608,8 +607,6 @@ public class Main : BaseUnityPlugin
                             clone立绘.name = Hero_.id;
                             clone立绘.SetActive(false);
                         }
-                        
-                        Debug.LogError("A3");
                     }
                     else
                     {
