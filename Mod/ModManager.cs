@@ -227,8 +227,10 @@ public class ModManager
      public static Dictionary<string, List<HeroLevel_>> ModHeroLevel = new Dictionary<string, List<HeroLevel_>>();
      public static Dictionary<string, List<Achievement_>> ModAchievement = new Dictionary<string, List<Achievement_>>();
      public static Dictionary<string, List<Challange_>> ModChallenge = new Dictionary<string, List<Challange_>>();
-     
 
+
+     public static bool AchievementMod;
+     
      public static Dictionary<string, List<SkeletonDataAsset>> ModSKeletonDataCache =
          new Dictionary<string, List<SkeletonDataAsset>>();
 
@@ -245,6 +247,14 @@ public class ModManager
       Main.LogInfo((object) ("Mod.Author" + " : " + modConfig.Author));
       Main.LogInfo((object) ("Mod.Version" + " : " + modConfig.Version));
       Main.LogInfo((object) ("Mod.Description" + " : " + modConfig.Description));
+      if (modConfig.Name == "创意工坊成就mod" && modConfig.Author == "mogames")
+      {
+          AchievementMod = true;
+      }
+      else
+      {
+          AchievementMod = false;
+      }
       try
       { 
           

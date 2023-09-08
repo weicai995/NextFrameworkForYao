@@ -312,6 +312,8 @@ public class Main : BaseUnityPlugin
                 ///需要创建UnitPrefab的场合
                 
                 Main.LogInfo("Add Unit: "+ Unit_.id);
+                
+                ///检查是否安装了做成就的mod
             }
         }
 
@@ -473,6 +475,15 @@ public class Main : BaseUnityPlugin
                 Main.LogInfo("Add Challenge: " + (bonus).id);
             }
         }
+        
+        
+        ///检查是否安装成就mod
+        if (ModManager.AchievementMod)
+        {
+            DeckBuildingGame.GameManager.Instance.使用mod角色 = true;
+        }
+        
+        
         /*Logger.LogInfo(dataList.Length);*/
         LogInfo("Mod加载完毕");
     }
