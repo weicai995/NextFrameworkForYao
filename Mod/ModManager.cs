@@ -247,7 +247,7 @@ public class ModManager
       Main.LogInfo((object) ("Mod.Author" + " : " + modConfig.Author));
       Main.LogInfo((object) ("Mod.Version" + " : " + modConfig.Version));
       Main.LogInfo((object) ("Mod.Description" + " : " + modConfig.Description));
-      if (modConfig.Name == "创意工坊成就mod" && modConfig.Author == "mogames")
+      if (modConfig.Name == "降妖散记成就mod" && modConfig.Author == "mogames")
       {
           AchievementMod = true;
       }
