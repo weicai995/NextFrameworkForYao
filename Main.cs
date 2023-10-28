@@ -480,7 +480,7 @@ public class Main : BaseUnityPlugin
         ///检查是否安装成就mod
         if (ModManager.AchievementMod)
         {
-            DeckBuildingGame.GameManager.Instance.使用mod角色 = true;
+            DeckBuildingGame.GameManager.Instance.mod可以做成就 = true;
         }
         
         
@@ -542,7 +542,7 @@ public class Main : BaseUnityPlugin
 /// </summary>
 /// <returns></returns>
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.InitHeroPage))]
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.StartMainMenu))]
     public static void AddNewHeroBtn(MainMenuManager __instance)
     {
         
